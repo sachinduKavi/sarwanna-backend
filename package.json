@@ -6,14 +6,24 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.ts",
     "dev": "nodemon index.ts",
-    "build": "tsc"
+    "build": "tsc",
+    "db:generate": "drizzle-kit generate:pg --out-dir ./drizzle --schema ./drizzle/schema.ts",
+    "db:migrate": "drizzle-kit push:pg --out-dir ./drizzle --schema ./drizzle/schema.ts",
+    "db:rollback": "drizzle-kit rollback:pg --out-dir ./drizzle --schema ./drizzle/schema.ts",
+    "db:seed": "drizzle-kit seed:pg --out-dir ./drizzle --schema ./drizzle/schema.ts",
+    "db:reset": "drizzle-kit reset:pg --out-dir ./drizzle --schema ./drizzle/schema.ts",
+    "db:status": "drizzle-kit status:pg --out-dir ./drizzle --schema ./drizzle/schema.ts"
   },
   "author": "Sachindu Kavishka",
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "crypto": "^1.0.1",
     "dotenv": "^16.4.7",
+    "drizzle-kit": "^0.30.6",
+    "drizzle-orm": "^0.41.0",
     "express": "^5.1.0",
+    "mysql2": "^3.14.0",
     "nodemon": "^3.1.9",
     "typescript": "^5.8.3"
   },
