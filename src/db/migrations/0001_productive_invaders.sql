@@ -1,0 +1,3 @@
+ALTER TABLE `product` MODIFY COLUMN `product_id` varchar(36) NOT NULL DEFAULT 'ea06ebe4-0718-42d5-9026-784e99b96783';--> statement-breakpoint
+ALTER TABLE `product` MODIFY COLUMN `created_at` varchar(36) NOT NULL DEFAULT '50d35045-1a48-4626-a3a4-d929a8199f0a';--> statement-breakpoint
+ALTER TABLE `product` MODIFY COLUMN `updated_at` varchar(36) NOT NULL DEFAULT 'cf452714-b029-41eb-90fb-079b6493df71';

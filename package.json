@@ -7,12 +7,8 @@
     "start": "node index.ts",
     "dev": "nodemon index.ts",
     "build": "tsc",
-    "db:generate": "drizzle-kit generate:pg --out-dir ./drizzle --schema ./drizzle/schema.ts",
-    "db:migrate": "drizzle-kit push:pg --out-dir ./drizzle --schema ./drizzle/schema.ts",
-    "db:rollback": "drizzle-kit rollback:pg --out-dir ./drizzle --schema ./drizzle/schema.ts",
-    "db:seed": "drizzle-kit seed:pg --out-dir ./drizzle --schema ./drizzle/schema.ts",
-    "db:reset": "drizzle-kit reset:pg --out-dir ./drizzle --schema ./drizzle/schema.ts",
-    "db:status": "drizzle-kit status:pg --out-dir ./drizzle --schema ./drizzle/schema.ts"
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "tsx src/db/migrate.ts"
   },
   "author": "Sachindu Kavishka",
   "license": "ISC",
@@ -25,6 +21,7 @@
     "express": "^5.1.0",
     "mysql2": "^3.14.0",
     "nodemon": "^3.1.9",
+    "tsx": "^4.19.3",
     "typescript": "^5.8.3"
   },
   "devDependencies": {

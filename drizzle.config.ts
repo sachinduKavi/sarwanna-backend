@@ -1,16 +1,15 @@
 import dotenv from 'dotenv'
-import { defineConfig } from 'drizzle-kit'
+import { Config } from 'drizzle-kit'
 
 
 dotenv.config()
 
-export default defineConfig({
+export default {
     schema: './src/db/schema.ts',
     out: './src/db/migrations',
-    driver: 'd1-http',
+    // driver: 'mysql2', // Removed as it is not a valid property
+    dialect: 'mysql', // ✅ Add this line
     dbCredentials: {
-        connectionString: process.env.DATABASE_URL as string,
+      url: process.env.DATABASE_URL!,
     },
-    verbose: true,
-    strict: true
-})
+  } satisfies Config; 
