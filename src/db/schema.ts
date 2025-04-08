@@ -3,7 +3,7 @@ import { mysqlTable, varchar, boolean, decimal, datetime, char, int } from "driz
 import { randomUUID } from "crypto";
 
 
-
+// Admin table
 export const admin = mysqlTable("admin", {
     adminId: varchar("admin_id", {length: 36}).primaryKey().default(randomUUID()),
     name: varchar("name", {length: 20}).notNull(),
@@ -12,7 +12,7 @@ export const admin = mysqlTable("admin", {
 });
 
 
-
+// Product table
 export const product = mysqlTable("product", {
     productId: varchar("product_id", { length: 36 }).primaryKey().default(randomUUID()),
     name: varchar("name", {length: 128}).notNull(),
@@ -25,6 +25,7 @@ export const product = mysqlTable("product", {
 });
 
 
+// Product Images table
 export const productImages = mysqlTable("product_images", {
     imageId: varchar("image_id", {length:36}).primaryKey().default(randomUUID()),
     productId: varchar("product_id", {length: 36}).notNull().references(() => product.productId),
@@ -33,12 +34,14 @@ export const productImages = mysqlTable("product_images", {
 })
 
 
+// Product List 
 export const productList = mysqlTable("product_list", {
     orderId: varchar("order_id", {length: 36}).notNull().references(() => order.orderId),
     productId: varchar("product_id", {length: 36}).notNull().references(() => product.productId)
 })
 
 
+// Customer table
 export const customer = mysqlTable("customer", {
     customerId: varchar("customer_id", {length: 36}).primaryKey().default(randomUUID()),
     name: varchar("name", {length: 50}),
@@ -48,6 +51,7 @@ export const customer = mysqlTable("customer", {
 })
 
 
+// Order table
 export const order = mysqlTable("order", {
     orderId: varchar("order_id", {length: 36}).primaryKey().default(randomUUID()),
     datetime: datetime("datetime", {mode: "date"}).notNull(),
