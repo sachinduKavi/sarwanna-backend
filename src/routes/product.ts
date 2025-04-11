@@ -1,6 +1,9 @@
 import express from 'express';
 import multer from 'multer';
+import { Request, Response } from 'express';
 import { uploadProductImage } from '../controllers/product';
+import { imageFileType } from '../middleware/types';
+import { v4 } from 'uuid';
 
 const router = express.Router();
 
@@ -11,7 +14,8 @@ const storage = multer.diskStorage({
         return cb(null, './public/images/');  // Folder where the file will be saved
     },
     filename: function (req, file, cb) {
-        return cb(null, `${Date.now()}-${file.originalname}`);  // File naming convention
+        console.log(file)
+        return cb(null, `${Date.now()}-${v4()}${imageFileType(file.mimetype)}`);  // File naming convention
     }
 });
 
@@ -19,6 +23,6 @@ const storage = multer.diskStorage({
 const upload = multer({storage: storage});
 
 // POST route to handle file upload
-router.post('/uploadImage', upload.single('file'), uploadProductImage);
+router.post('/uploadImage', upload.array("file"), uploadProductImage);
 
 export default router;
