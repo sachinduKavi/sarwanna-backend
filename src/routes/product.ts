@@ -1,7 +1,7 @@
 import express from 'express';
 import multer from 'multer';
 import { Request, Response } from 'express';
-import { uploadProductImage } from '../controllers/product';
+import { uploadProductImage, categoryEdit, fetchCategory, createProduct } from '../controllers/product';
 import { imageFileType } from '../middleware/types';
 import { v4 } from 'uuid';
 
@@ -24,5 +24,11 @@ const upload = multer({storage: storage});
 
 // POST route to handle file upload
 router.post('/uploadImage', upload.array("file"), uploadProductImage);
+
+router.post('/editCategory', categoryEdit)
+
+router.get('/fetchCategories', fetchCategory)
+
+router.post('/createProduct', createProduct)
 
 export default router;
