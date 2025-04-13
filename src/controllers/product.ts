@@ -68,7 +68,7 @@ const fetchCategory = async(req: Request, res: Response) => {
 
 const createProduct = async (req: Request, res: Response) => {
     let proceed = true, message = null, content = null
-
+    
     try {
         await ProductServices.createProduct(req.body)
     } catch(e) {
