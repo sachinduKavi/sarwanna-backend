@@ -1,7 +1,7 @@
 import express from 'express';
 import multer from 'multer';
 import { Request, Response } from 'express';
-import { uploadProductImage, categoryEdit, fetchCategory, createProduct } from '../controllers/product';
+import { uploadProductImage, categoryEdit, fetchCategory, createProduct, loadProducts } from '../controllers/product';
 import { imageFileType } from '../middleware/types';
 import { v4 } from 'uuid';
 import { authorization } from '../middleware/authorization';
@@ -31,5 +31,7 @@ router.post('/editCategory', authorization, categoryEdit)
 router.get('/fetchCategories', authorization, fetchCategory)
 
 router.post('/createProduct', authorization, createProduct)
+
+router.get('/loadProducts', authorization, loadProducts)
 
 export default router;

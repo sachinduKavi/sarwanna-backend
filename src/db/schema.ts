@@ -35,6 +35,14 @@ export const product = mysqlTable("product", {
 });
 
 
+export const productRelation = relations(product, ({one}) => ({
+    category: one(category, {
+        fields: [product.catId],
+        references: [category.catId]
+    })
+}));
+
+
 // Product Images table
 export const productImages = mysqlTable("product_images", {
     imageId: varchar("image_id", {length:36}).primaryKey().default(sql`UUID()`),
