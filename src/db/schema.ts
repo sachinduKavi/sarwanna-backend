@@ -10,7 +10,7 @@ export const admin = mysqlTable("admin", {
     adminId: varchar("admin_id", {length: 36}).primaryKey().default(sql`UUID()`),
     name: varchar("name", {length: 20}).notNull(),
     email: varchar("email", {length: 30}).notNull(),
-    password: varchar("password", {length: 30}).notNull()
+    password: varchar("password", {length: 250}).notNull()
 });
 
 

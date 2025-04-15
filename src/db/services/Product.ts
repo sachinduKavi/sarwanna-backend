@@ -22,6 +22,7 @@ class ProductServices {
     }
 
 
+    // Fetch product items and format it to json 
     static async fetchProducts() {
         const result = await db.select({
             productId: product.productId,

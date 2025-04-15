@@ -57,6 +57,13 @@
       "when": 1744383252583,
       "tag": "0007_broken_harrier",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "5",
+      "when": 1744742076513,
+      "tag": "0008_green_hex",
+      "breakpoints": true
     }
   ]
 }
