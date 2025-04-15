@@ -60,7 +60,7 @@ class ProductServices {
             }
         }
         const productList = []
-        for(const [key, value] of Object.entries(productMap)) {
+        for(const value of Object.values(productMap)) {
             productList.push(value)
         }
         return productList
