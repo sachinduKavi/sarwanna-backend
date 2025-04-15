@@ -23,14 +23,33 @@ class ProductServices {
 
 
     static async fetchProducts() {
-        const result = await db.query.product.findMany({
-            with: {
-                category: true
-            }
-        }).toSQL()
+        const result = await db
+            .select({
+                product,        // Select fields from the product table
+                category,       // Select fields from the category table
+                productImages,  // Select fields from the product_images table
+            })
+            .from(product)
+            .leftJoin(category, eq(product.catId, category.catId))  // Left join category
+            .leftJoin(productImages, eq(product.productId, productImages.productId));  // Left join product_images
 
-        console.log(result)
+        // Format the result
+        const formatted = result.map(({ product, category, productImages }) => ({
+            ...product,
+            category: category ? {  // Check if category is not null
+                catId: category.catId,
+                name: category.name,
+            } : null, // If category is null, set it to null
+            // Ensure productImages is an array before using .map()
+            imageList: Array.isArray(productImages) ? productImages.map((image) => image.url) : []  // Only map if productImages is an array
+        }));
+
+        console.log(formatted)
     }
+
+
+
+
 }
 
 
