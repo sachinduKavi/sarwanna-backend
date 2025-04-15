@@ -1,6 +1,7 @@
-import express from 'express'
+import express, { Request, Response } from 'express'
 import dotenv from 'dotenv'
 import cors from 'cors'
+import path from 'path'
 
 import productRouter from './src/routes/product'
 import adminRouter from './src/routes/admin'
@@ -19,7 +20,6 @@ app.use(cors({
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }))
-
 
 
 app.use('/product', productRouter)
