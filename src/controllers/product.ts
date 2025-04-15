@@ -97,7 +97,7 @@ const loadProducts = async (req: Request, res: Response) => {
     }
     
 
-    res.status(proceed?201:500).json({
+    res.status(proceed?200:500).json({
         proceed: proceed,
         message: message,
         content: content
