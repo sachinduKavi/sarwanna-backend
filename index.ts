@@ -3,6 +3,7 @@ import dotenv from 'dotenv'
 import cors from 'cors'
 
 import productRouter from './src/routes/product'
+import adminRouter from './src/routes/admin'
 
 
 dotenv.config()
@@ -22,6 +23,8 @@ app.use(cors({
 
 
 app.use('/product', productRouter)
+
+app.use('/admin', adminRouter)
 
 
 app.listen(PORT, () => {
