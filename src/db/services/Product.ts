@@ -23,13 +23,55 @@ class ProductServices {
 
 
     static async fetchProducts() {
-        const result = await db.query.product.findMany({
-            with: {
-                category: true
+        const result = await db.select({
+            productId: product.productId,
+            name: product.name,
+            stock: product.stock,
+            unitPrice: product.unitPrice,
+            unitMeasure: product.unitMeasure,
+            topItem: product.topItem,
+            description: product.description,
+            createdAt: product.createdAt,
+            category: {
+                catId: category.catId,
+                name: category.name
+            },
+            productImages: {
+                imageId: productImages.imageId,
+                url: productImages.url,
+                sortNo: productImages.sortNo
             }
-        }).toSQL()
+        }).from(product).leftJoin(productImages, eq(productImages.productId, product.productId))
+                                        .leftJoin(category, eq(category.catId, product.catId)).orderBy(product.createdAt)
 
-        console.log(result)
+
+        // console.log(result)
+        const productMap: Record<string, any> = {}
+        for(const row of result) {
+            if(!productMap[row.productId]) {
+                productMap[row.productId] = {
+                    productId: row.productId,
+                    name: row.name,
+                    stock: row.stock,
+                    unitPrice: row.unitPrice,
+                    unitMeasure: row.unitMeasure,
+                    topItem: row.topItem,
+                    description: row.description,
+                    createdAt: row.createdAt,
+                    category: {
+                        catId: row.category?.catId ?? null,
+                        name: row.category?.name ?? null
+                    },
+                    productImages: []
+                }
+            }
+
+            if(row.productImages) {
+                productMap[row.productId].productImages.push(row.productImages)
+            }
+        }
+        return productMap
+
     }
 }
 
