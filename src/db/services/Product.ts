@@ -59,7 +59,11 @@ class ProductServices {
                 productMap[row.productId].productImages.push(row.productImages)
             }
         }
-        return productMap
+        const productList = []
+        for(const [key, value] of Object.entries(productMap)) {
+            productList.push(value)
+        }
+        return productList
 
     }
 }
