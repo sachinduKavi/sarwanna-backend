@@ -23,28 +23,55 @@ class ProductServices {
 
 
     static async fetchProducts() {
-        const result = await db
-            .select({
-                product,        // Select fields from the product table
-                category,       // Select fields from the category table
-                productImages,  // Select fields from the product_images table
-            })
-            .from(product)
-            .leftJoin(category, eq(product.catId, category.catId))  // Left join category
-            .leftJoin(productImages, eq(product.productId, productImages.productId));  // Left join product_images
-
-        // Format the result
-        const formatted = result.map(({ product, category, productImages }) => ({
-            ...product,
-            category: category ? {  // Check if category is not null
+        const result = await db.select({
+            productId: product.productId,
+            name: product.name,
+            stock: product.stock,
+            unitPrice: product.unitPrice,
+            unitMeasure: product.unitMeasure,
+            topItem: product.topItem,
+            description: product.description,
+            createdAt: product.createdAt,
+            category: {
                 catId: category.catId,
-                name: category.name,
-            } : null, // If category is null, set it to null
-            // Ensure productImages is an array before using .map()
-            imageList: Array.isArray(productImages) ? productImages.map((image) => image.url) : []  // Only map if productImages is an array
-        }));
+                name: category.name
+            },
+            productImages: {
+                imageId: productImages.imageId,
+                url: productImages.url,
+                sortNo: productImages.sortNo
+            }
+        }).from(product).leftJoin(productImages, eq(productImages.productId, product.productId))
+                                        .leftJoin(category, eq(category.catId, product.catId)).orderBy(product.createdAt)
 
-        console.log(formatted)
+
+        // console.log(result)
+        const productMap: Record<string, any> = {}
+        for(const row of result) {
+            if(!productMap[row.productId]) {
+                productMap[row.productId] = {
+                    productId: row.productId,
+                    name: row.name,
+                    stock: row.stock,
+                    unitPrice: row.unitPrice,
+                    unitMeasure: row.unitMeasure,
+                    topItem: row.topItem,
+                    description: row.description,
+                    createdAt: row.createdAt,
+                    category: {
+                        catId: row.category?.catId ?? null,
+                        name: row.category?.name ?? null
+                    },
+                    productImages: []
+                }
+            }
+
+            if(row.productImages) {
+                productMap[row.productId].productImages.push(row.productImages)
+            }
+        }
+        return productMap
+
     }
 
 
