@@ -50,18 +50,7 @@ class ProductServices {
         for(const row of result) {
             if(!productMap[row.productId]) {
                 productMap[row.productId] = {
-                    productId: row.productId,
-                    name: row.name,
-                    stock: row.stock,
-                    unitPrice: row.unitPrice,
-                    unitMeasure: row.unitMeasure,
-                    topItem: row.topItem,
-                    description: row.description,
-                    createdAt: row.createdAt,
-                    category: {
-                        catId: row.category?.catId ?? null,
-                        name: row.category?.name ?? null
-                    },
+                    ...row,
                     productImages: []
                 }
             }
