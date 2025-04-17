@@ -88,7 +88,6 @@ const createProduct = async (req: Request, res: Response) => {
 
 const loadProducts = async (req: Request, res: Response) => {
     let proceed = true, message = null, content = null
-    console.log('load products')
 
     try {
         content = await ProductServices.fetchProducts()
@@ -104,10 +103,54 @@ const loadProducts = async (req: Request, res: Response) => {
     })
 }
 
+
+
+const deleteCategory = async (req: Request, res: Response) => {
+    let proceed = true, message = null, content = null
+    console.log('delete category', req.params.catId)
+
+    try {
+        await ProductServices.deleteCategory(req.params.catId)
+        message = 'category deleted'
+    } catch(e) {
+        proceed = false
+        message = 'server error'
+    }
+
+    res.status(proceed?200:500).json({
+        proceed: proceed,
+        message: message,
+        content: content
+    })
+}
+
+
+const deleteProduct = async (req: Request, res: Response) => {
+    let proceed = true, message = null, content = null
+
+    try {
+        await ProductServices.deleteProduct(req.params.productId)
+        message = 'product delete success'
+    } catch(e) {
+        console.log(e)
+        proceed = false
+        message = 'server error'
+    }
+    
+
+    res.status(proceed?200:500).json({
+        proceed: proceed,
+        message: message,
+        content: content
+    })
+}
+
 export { 
     uploadProductImage,
     categoryEdit,
     fetchCategory,
     createProduct,
-    loadProducts
+    loadProducts,
+    deleteCategory,
+    deleteProduct
  };
