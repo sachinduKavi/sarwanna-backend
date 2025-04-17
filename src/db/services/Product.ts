@@ -13,10 +13,11 @@ class ProductServices {
             const productID = randomUUID()
 
             const result = await tx.insert(product).values({productId: productID, ...values})
-            console.log(result)
+            // console.log('results',result)
             // Updating product image table
             let count = 0;
-            for(const url of values.imageList) {
+            // console.log('values', values)
+            for(const url of values.productImages) {
                 await tx.insert(productImages).values({productId: productID, url: url, sortNo: count++})
             }
         })
