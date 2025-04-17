@@ -4,6 +4,7 @@ import Product from "../../models/Product";
 import { category, product, productImages } from "../schema";
 import { randomUUID } from "crypto";
 import {eq} from 'drizzle-orm'
+import { deleteImage } from "../../middleware/fileHandling";
 
 class ProductServices {
     static async createProduct(values: any) {
@@ -12,10 +13,11 @@ class ProductServices {
             const productID = randomUUID()
 
             const result = await tx.insert(product).values({productId: productID, ...values})
-            console.log(result)
+            // console.log('results',result)
             // Updating product image table
             let count = 0;
-            for(const url of values.imageList) {
+            // console.log('values', values)
+            for(const url of values.productImages) {
                 await tx.insert(productImages).values({productId: productID, url: url, sortNo: count++})
             }
         })
@@ -68,6 +70,34 @@ class ProductServices {
 
     }
 
+
+    static async deleteCategory(catId: string) {
+        // Undefine category c088afdf-16c3-11f0-a8f8-04d4c438f3ef
+        // change to undefine category 
+        await db.update(product).set({catId: 'c088afdf-16c3-11f0-a8f8-04d4c438f3ef'}).where(eq(product.catId, catId))
+
+        // Delete the category from the database
+        const res = await db.delete(category).where(eq(category.catId, catId))
+        console.log(res)
+    }
+
+
+
+    static async deleteProduct(productId: string) {
+        // Get all the image name relating to product
+        const result = await db.select().from(productImages).where(eq(productImages.productId, productId))
+        console.log(result)
+
+        for(const image of result) {
+            deleteImage(image.url) // Deleting images from the file location
+        }
+
+        // Delete all the images related
+        await db.delete(productImages).where(eq(productImages.productId, productId))
+
+        // Final step delete the product
+        await db.delete(product).where(eq(product.productId, productId))
+    }
 
 
 
