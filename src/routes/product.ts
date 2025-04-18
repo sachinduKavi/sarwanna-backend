@@ -1,7 +1,7 @@
 import express from 'express';
 import multer from 'multer';
 import { Request, Response } from 'express';
-import { uploadProductImage, categoryEdit, fetchCategory, createProduct, loadProducts, deleteCategory, deleteProduct } from '../controllers/product';
+import { uploadProductImage, categoryEdit, fetchCategory, createProduct, loadProducts, deleteCategory, deleteProduct, deleteSingleImage } from '../controllers/product';
 import { imageFileType } from '../middleware/types';
 import { v4 } from 'uuid';
 import { authorization } from '../middleware/authorization';
@@ -38,7 +38,7 @@ router.delete('/deleteCategory/:catId',authorization, deleteCategory)
 
 router.delete('/deleteProduct/:productId', authorization, deleteProduct)
 
-
+router.delete('/deleteSingleImage/:imageId', authorization, deleteSingleImage)
 
 
 export default router;

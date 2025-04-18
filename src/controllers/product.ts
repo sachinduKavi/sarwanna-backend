@@ -51,6 +51,7 @@ const categoryEdit = async (req: Request, res: Response) => {
 
 
 const fetchCategory = async(req: Request, res: Response) => {
+    console.log('load product')
     let proceed = true, message = null, content = null
 
     try {
@@ -148,6 +149,28 @@ const deleteProduct = async (req: Request, res: Response) => {
     })
 }
 
+
+const deleteSingleImage = async(req: Request, res: Response) => {
+    let proceed = true, message = null, content = null
+
+    console.log('delete single image')
+
+    try {
+        await ProductServices.deleteSingleImage(req.params.imageId)
+    } catch(e) {
+        console.log(e)
+        proceed = false
+        message = 'server error'
+    }
+    
+
+    res.status(proceed?200:500).json({
+        proceed: proceed,
+        message: message,
+        content: content
+    })
+}
+
 export { 
     uploadProductImage,
     categoryEdit,
@@ -155,5 +178,6 @@ export {
     createProduct,
     loadProducts,
     deleteCategory,
-    deleteProduct
+    deleteProduct,
+    deleteSingleImage
  };
