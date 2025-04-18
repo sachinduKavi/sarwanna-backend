@@ -23,6 +23,23 @@ class ProductServices {
         })
     }
 
+    // Update all ready existing product
+    static async updateProduct(productValues: any) {
+        const result = await db.transaction(async (tx) => {
+            const result = await tx.update(product).set({
+                ...productValues,
+                unitPrice: productValues.unitPrice?.toString()
+            }).where(eq(product.productId, productValues.productId!))
+
+
+            console.log(result)
+            let count = 0;
+            for(const url of productValues.productImages) {
+                await tx.insert(productImages).values({productId: productValues.productId, url: url, sortNo: count++})
+            }
+        })
+    }
+
 
     // Fetch product items and format it to json 
     static async fetchProducts() {
@@ -160,6 +177,9 @@ class ProductServices {
 
         return productList
     }
+
+
+    
 }
 
 

@@ -189,6 +189,25 @@ const fetchProductsRelevantToCategoryRequest = async (req: Request, res: Respons
     })
 }
 
+
+const updateProductValues = async(req: Request, res: Response) => {
+    let proceed = true, message = null, content = null
+
+    try {
+        await ProductServices.updateProduct(req.body)
+    } catch(e) {
+        console.log(e)
+        proceed = false
+        message = 'update fail'
+    }
+
+    res.status(proceed?201:500).json({
+        proceed: proceed,
+        message: message,
+        content: content
+    })
+}
+
 export { 
     uploadProductImage,
     categoryEdit,
@@ -198,5 +217,6 @@ export {
     deleteCategory,
     deleteProduct,
     deleteSingleImage,
-    fetchProductsRelevantToCategoryRequest
+    fetchProductsRelevantToCategoryRequest,
+    updateProductValues
  };
