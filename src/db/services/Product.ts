@@ -74,11 +74,14 @@ class ProductServices {
     static async deleteCategory(catId: string) {
         // Undefine category c088afdf-16c3-11f0-a8f8-04d4c438f3ef
         // change to undefine category 
-        await db.update(product).set({catId: 'c088afdf-16c3-11f0-a8f8-04d4c438f3ef'}).where(eq(product.catId, catId))
+        const result = await db.transaction(async (tx) => {
+            await tx.update(product).set({catId: 'c088afdf-16c3-11f0-a8f8-04d4c438f3ef'}).where(eq(product.catId, catId))
 
-        // Delete the category from the database
-        const res = await db.delete(category).where(eq(category.catId, catId))
-        console.log(res)
+            // Delete the category from the database
+            const res = await tx.delete(category).where(eq(category.catId, catId))
+            console.log(res)
+        })
+        
     }
 
 
@@ -97,6 +100,19 @@ class ProductServices {
 
         // Final step delete the product
         await db.delete(product).where(eq(product.productId, productId))
+    }
+
+
+    static async deleteSingleImage(imageId: string) {
+        await db.transaction(async (tx) => {
+            const imageResult = await tx.query.productImages.findFirst({
+                where: eq(productImages.imageId, imageId)
+            })
+            // Delete image from the database
+            await tx.delete(productImages).where(eq(productImages.imageId, imageId))
+
+            deleteImage(imageResult!.url) // Deleting the image from server storage
+        })
     }
 
 
