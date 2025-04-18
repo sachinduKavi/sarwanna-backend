@@ -171,6 +171,24 @@ const deleteSingleImage = async(req: Request, res: Response) => {
     })
 }
 
+const fetchProductsRelevantToCategoryRequest = async (req: Request, res: Response) => {
+    let proceed = true, message = null, content = null
+
+    try {
+        content = await ProductServices.fetchProductsRelevantToCategoryRequest(req.params.catId)
+        message="fetch product complete"
+    } catch(e) {
+        proceed = false
+        message="fetch product Failed"
+    }
+
+    res.status(proceed?200:500).json({
+        proceed: proceed,
+        message: message,
+        content: content
+    })
+}
+
 export { 
     uploadProductImage,
     categoryEdit,
@@ -179,5 +197,6 @@ export {
     loadProducts,
     deleteCategory,
     deleteProduct,
-    deleteSingleImage
+    deleteSingleImage,
+    fetchProductsRelevantToCategoryRequest
  };

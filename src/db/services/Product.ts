@@ -85,8 +85,6 @@ class ProductServices {
         
     }
 
-
-
     static async deleteProduct(productId: string) {
         // Get all the image name relating to product
         const result = await db.select().from(productImages).where(eq(productImages.productId, productId))
@@ -116,8 +114,52 @@ class ProductServices {
         })
     }
 
+    static async fetchProductsRelevantToCategoryRequest(catId: string) {
 
+        const result = await db.select({
+            productId: product.productId,
+            name: product.name,
+            stock: product.stock,
+            unitPrice: product.unitPrice,
+            unitMeasure: product.unitMeasure,
+            topItem: product.topItem,
+            description: product.description,
+            createdAt: product.createdAt,
+            category: {
+                catId: category.catId,
+                name: category.name
+            },
+            productImages: {
+                imageId: productImages.imageId,
+                url: productImages.url,
+                sortNo: productImages.sortNo
+            }
+        }).from(product)
+            .leftJoin(productImages, eq(productImages.productId, product.productId))
+            .leftJoin(category, eq(category.catId, product.catId))
+            .where(eq(product.catId, catId))
+            .orderBy(product.createdAt);
 
+        const productMap: Record<string, any> = {};
+        for (const row of result) {
+            if (!productMap[row.productId]) {
+                productMap[row.productId] = {
+                    ...row,
+                    productImages: []
+                };
+            }
+
+            if (row.productImages) {
+                productMap[row.productId].productImages.push(row.productImages);
+            }
+        }
+        const productList = []
+        for(const value of Object.values(productMap)) {
+            productList.push(value)
+        }
+
+        return productList
+    }
 }
 
 
