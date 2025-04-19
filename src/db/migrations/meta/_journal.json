@@ -64,6 +64,13 @@
       "when": 1744742076513,
       "tag": "0008_green_hex",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "5",
+      "when": 1745089952184,
+      "tag": "0009_hot_vargas",
+      "breakpoints": true
     }
   ]
 }
