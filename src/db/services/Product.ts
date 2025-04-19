@@ -83,7 +83,6 @@ class ProductServices {
         for(const value of Object.values(productMap)) {
             productList.push(value)
         }
-        console.log(productList)
         return productList
 
     }

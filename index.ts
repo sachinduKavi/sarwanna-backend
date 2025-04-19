@@ -5,6 +5,7 @@ import path from 'path'
 
 import productRouter from './src/routes/product'
 import adminRouter from './src/routes/admin'
+import orderRouter from './src/routes/order'
 
 
 dotenv.config()
@@ -25,6 +26,7 @@ app.use(cors({
 app.use('/product', productRouter)
 
 app.use('/admin', adminRouter)
+app.use('/order', orderRouter)
 
 
 app.listen(PORT, () => {

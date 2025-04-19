@@ -55,7 +55,8 @@ export const productImages = mysqlTable("product_images", {
 // Product List 
 export const productList = mysqlTable("product_list", {
     orderId: varchar("order_id", {length: 36}).notNull().references(() => order.orderId),
-    productId: varchar("product_id", {length: 36}).notNull().references(() => product.productId)
+    productId: varchar("product_id", {length: 36}).notNull().references(() => product.productId),
+    qty:int("qty").notNull().default(0),
 })
 
 
