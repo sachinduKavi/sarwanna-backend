@@ -214,7 +214,7 @@ const sendCustomerInquiry = async (inquiry:Inquiry) => {
                 <div class="section-title">
                 <i class="fas fa-comments"></i>&nbsp; Message
                 </div>
-                <p>{inquiry.message}</p>
+                <p>${inquiry.message}</p>
             </div>
 
         
