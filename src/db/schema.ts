@@ -73,7 +73,7 @@ export const customer = mysqlTable("customer", {
 // Order table
 export const order = mysqlTable("order", {
     orderId: varchar("order_id", {length: 36}).primaryKey().default(sql`UUID()`),
-    datetime: datetime("datetime", {mode: "date"}).notNull(),
+    datetime: datetime("datetime").notNull(),
     note: varchar("note", {length: 1024}),
     status: boolean("status").default(true).notNull(),
     customerId: varchar("customer_id", {length: 36}).notNull().references(() => customer.customerId),
