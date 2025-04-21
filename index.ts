@@ -6,6 +6,7 @@ import path from 'path'
 import productRouter from './src/routes/product'
 import adminRouter from './src/routes/admin'
 import orderRouter from './src/routes/order'
+import inquiryRouter from './src/routes/Inquiry'
 
 
 dotenv.config()
@@ -27,6 +28,7 @@ app.use('/product', productRouter)
 
 app.use('/admin', adminRouter)
 app.use('/order', orderRouter)
+app.use('/inquiry', inquiryRouter)
 
 
 app.listen(PORT, () => {

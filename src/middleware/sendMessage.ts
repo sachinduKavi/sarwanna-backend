@@ -19,7 +19,7 @@ const sendCustomerOrderConfirmation = async (customerData: any, productListData:
         const info = await transporter.sendMail({
             from: '',
             to: customerData.email,
-            subject: 'New Customer Inquiry - Flower Shop',
+            subject: 'New Inquiry Inquiry - Flower Shop',
             html: `<!DOCTYPE html>
                         <html lang="en">
                         <head>

@@ -87,6 +87,48 @@ class ProductServices {
 
     }
 
+    static async fetchBestProducts() {
+        const result = await db.select({
+            productId: product.productId,
+            name: product.name,
+            stock: product.stock,
+            unitPrice: product.unitPrice,
+            unitMeasure: product.unitMeasure,
+            topItem: product.topItem,
+            description: product.description,
+            createdAt: product.createdAt,
+            category: {
+                catId: category.catId,
+                name: category.name
+            },
+            productImages: {
+                imageId: productImages.imageId,
+                url: productImages.url,
+                sortNo: productImages.sortNo
+            }
+        })
+            .from(product)
+            .leftJoin(productImages, eq(productImages.productId, product.productId))
+            .leftJoin(category, eq(category.catId, product.catId))
+            .where(eq(product.topItem, true)) // Filter for top products
+            .orderBy(product.createdAt);
+
+        const productMap: Record<string, any> = {};
+        for (const row of result) {
+            if (!productMap[row.productId]) {
+                productMap[row.productId] = {
+                    ...row,
+                    productImages: []
+                };
+            }
+
+            if (row.productImages) {
+                productMap[row.productId].productImages.push(row.productImages);
+            }
+        }
+        return Object.values(productMap);
+    }
+
 
     static async deleteCategory(catId: string) {
         // Undefine category c088afdf-16c3-11f0-a8f8-04d4c438f3ef

@@ -107,6 +107,22 @@ const loadProducts = async (req: Request, res: Response) => {
     })
 }
 
+const loadBestProducts = async (req: Request, res: Response) => {
+    let proceed = true, message = null, content = null
+
+    try {
+        content = await ProductServices.fetchBestProducts()
+        // console.log(content )
+    } catch(e) {
+        proceed = false
+    }
+    res.status(proceed?200:500).json({
+        proceed: proceed,
+        message: message,
+        content: content
+    })
+}
+
 
 
 const deleteCategory = async (req: Request, res: Response) => {
@@ -218,5 +234,6 @@ export {
     deleteProduct,
     deleteSingleImage,
     fetchProductsRelevantToCategoryRequest,
-    updateProductValues
+    updateProductValues,
+    loadBestProducts
  };

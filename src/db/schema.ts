@@ -60,7 +60,7 @@ export const productList = mysqlTable("product_list", {
 })
 
 
-// Customer table
+// Inquiry table
 export const customer = mysqlTable("customer", {
     customerId: varchar("customer_id", {length: 36}).primaryKey().default(sql`UUID()`),
     name: varchar("name", {length: 50}),

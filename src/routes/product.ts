@@ -11,7 +11,7 @@ import {
     deleteProduct,
     deleteSingleImage,
     fetchProductsRelevantToCategoryRequest,
-    updateProductValues
+    updateProductValues, loadBestProducts
 } from '../controllers/product';
 import { imageFileType } from '../middleware/types';
 import { v4 } from 'uuid';
@@ -52,6 +52,8 @@ router.delete('/deleteProduct/:productId', authorization, deleteProduct)
 router.delete('/deleteSingleImage/:imageId', authorization, deleteSingleImage)
 
 router.get('/fetchProductsOfCategory/:catId',authorization,fetchProductsRelevantToCategoryRequest)
+
+router.get('/getBestProducts/',authorization,loadBestProducts)
 
 router.put('/updateProduct', authorization, updateProductValues)
 
