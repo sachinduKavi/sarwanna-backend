@@ -2,7 +2,7 @@ import { eq } from "drizzle-orm";
 import Admin from "../../models/Admin";
 import db from "../database";
 import { admin } from "../schema";
-import { checkPassword } from "../../middleware/hashing";
+import {checkPassword, createHash} from "../../middleware/hashing";
 
 export default class AdminServices {
     // check admin password
@@ -18,4 +18,37 @@ export default class AdminServices {
 
         return false
     }
+
+    static async changePassword(passwordInfo: Admin): Promise<{ success: String}> {
+        const result = await db.query.admin.findFirst({
+            where: eq(admin.email, passwordInfo.email ?? '')
+        });
+
+        if (result) {
+            const newPassword = createHash(passwordInfo.newPassword ?? '');
+
+            const updatedAdmin = await db
+                .update(admin)
+                .set({ password: newPassword })
+                .where(eq(admin.email, passwordInfo.email ?? ''));
+
+            if (updatedAdmin) {
+                // const { password, ...rest } = updatedAdmin;
+                return { success: "password updated successfully"};
+            }
+        }
+
+        return { success: "An error occurred" };
+    }
+
+    static  async getCurrentPassword(accountInfo : Admin){
+        const result = await db.query.admin.findFirst({
+            where: eq(admin.email, accountInfo.email ?? '')
+        });
+
+        if(result){
+            
+        }
+    }
+
 }

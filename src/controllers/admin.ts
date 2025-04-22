@@ -27,6 +27,50 @@ const loginAttempt = async (req: Request, res: Response) => {
 }
 
 
+const changePassword = async (req: Request, res: Response)=>{
+    let proceed = true, message = null, content = null
+    try {
+        content = await AdminServices.changePassword(req.body)
+        if(content) {
+            message = 'password changed successfully';
+        }
+        else message = 'error occured';
+    } catch(e) {
+        proceed = false
+        message = 'server error'
+    }
+
+
+    res.status(200).json({
+        proceed: proceed,
+        message: message,
+        content: content
+    })
+}
+
+const getCurrentPassword = async (req: Request, res: Response)=>{
+    let proceed = true, message = null, content = null
+    try {
+        content = await AdminServices.getCurrentPassword(req.body)
+        if(content) {
+            message = 'password fetched successfully';
+        }
+        else message = 'error occurred';
+    } catch(e) {
+        proceed = false
+        message = 'server error'
+    }
+
+
+    res.status(200).json({
+        proceed: proceed,
+        message: message,
+        content: content
+    })
+}
+
 export {
-    loginAttempt
+    loginAttempt,
+    changePassword,
+    getCurrentPassword
 }
