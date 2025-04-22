@@ -5,11 +5,12 @@ import AdminServices from "../db/services/Admin";
 
 
 const loginAttempt = async (req: Request, res: Response) => {
-    let proceed = true, message = null, content = null
+    let proceed = false, message = null, content = null
 
     try {
         content = await AdminServices.loginAttempt(req.body)
         if(content) {
+            proceed = true
             message = 'login success';
         }
         else message = 'invalid username or password';
