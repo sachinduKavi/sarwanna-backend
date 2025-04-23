@@ -48,12 +48,12 @@ const changePassword = async (req: Request, res: Response)=>{
     })
 }
 
-const getCurrentPassword = async (req: Request, res: Response)=>{
+const updateProfileInfo = async (req: Request , res: Response )=>{
     let proceed = true, message = null, content = null
     try {
-        content = await AdminServices.getCurrentPassword(req.body)
+        content = await AdminServices.updateProfileInfo(req.body)
         if(content) {
-            message = 'password fetched successfully';
+            message = 'Profile updated successfully';
         }
         else message = 'error occurred';
     } catch(e) {
@@ -72,5 +72,6 @@ const getCurrentPassword = async (req: Request, res: Response)=>{
 export {
     loginAttempt,
     changePassword,
-    getCurrentPassword
+    updateProfileInfo
+
 }

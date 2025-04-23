@@ -25,30 +25,40 @@ export default class AdminServices {
         });
 
         if (result) {
-            const newPassword = createHash(passwordInfo.newPassword ?? '');
+            const newHashPassword = createHash(passwordInfo.newPassword ?? '');
+            const currentHashPassword = createHash(passwordInfo.currentPassword??'');
 
-            const updatedAdmin = await db
-                .update(admin)
-                .set({ password: newPassword })
-                .where(eq(admin.email, passwordInfo.email ?? ''));
+            if(result.password == currentHashPassword){
+                const updatedAdmin = await db
+                    .update(admin)
+                    .set({ password: newHashPassword })
+                    .where(eq(admin.email, passwordInfo.email ?? ''));
 
-            if (updatedAdmin) {
-                // const { password, ...rest } = updatedAdmin;
-                return { success: "password updated successfully"};
+                if (updatedAdmin) {
+                    // const { password, ...rest } = updatedAdmin;
+                    return { success: "password updated successfully"};
+                }
             }
         }
 
         return { success: "An error occurred" };
     }
 
-    static  async getCurrentPassword(accountInfo : Admin){
+    static async updateProfileInfo(accountInfo: Admin): Promise<boolean | Admin> {
         const result = await db.query.admin.findFirst({
-            where: eq(admin.email, accountInfo.email ?? '')
-        });
+            where: eq(admin.email, accountInfo.email?? '')
+        })
 
-        if(result){
-            
+        if(result) {
+            const updatedAdmin = await db
+                .update(admin)
+                .set({ username: accountInfo.username })
+                .where(eq(admin.email, accountInfo.email ?? ''));
+
+            return true
         }
+
+        return false
     }
 
 }
