@@ -26,7 +26,7 @@ const storage = multer.diskStorage({
         return cb(null, './public/images/');  // Folder where the file will be saved
     },
     filename: function (req, file, cb) {
-        console.log(file)
+        // console.log(file)
         return cb(null, `${Date.now()}-${v4()}${imageFileType(file.mimetype)}`);  // File naming convention
     }
 });

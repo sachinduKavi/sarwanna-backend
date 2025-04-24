@@ -25,7 +25,6 @@ export default class AdminServices {
             where: eq(admin.email, passwordInfo.email ?? '')
         });
 
-        console.log( "result", result )
         if (result !== null && result !== undefined) {
             const isMatch= await bcrypt.compare(passwordInfo.currentPassword!, result.password);
             const newHashPassword = await createHash(passwordInfo.newPassword ?? '');
@@ -37,7 +36,6 @@ export default class AdminServices {
                     .where(eq(admin.email, passwordInfo.email ?? ''));
 
                 if (updatedAdmin) {
-                    // const { password, ...rest } = updatedAdmin;
                     return true
                 }
             }
@@ -47,19 +45,21 @@ export default class AdminServices {
     }
 
     static async updateProfileInfo(accountInfo: Admin): Promise<boolean | Admin> {
-        // const result = await db.query.admin.findFirst({
-        //     where: eq(admin.email, accountInfo.email?? '')
-        // })
-        //
-        // if(result) {
-        //     const updatedAdmin = await db
-        //         .update(admin)
-        //         .set({ username: accountInfo.username })
-        //         .where(eq(admin.email, accountInfo.email ?? ''));
-        //
-        //     return true
-        // }
+        const result = await db.query.admin.findFirst({
+            where: eq(admin.email, accountInfo.email?? '')
+        })
+        console.log(result)
+        if(result !== null && result !== undefined) {
+            const updatedAdmin = await db
+                .update(admin)
+                .set({ name: accountInfo.name })
+                .where(eq(admin.email, accountInfo.email ?? ''));
+            // console.log(admin.name)
 
+            if(updatedAdmin){
+                return true
+            }
+        }
         return false
     }
 

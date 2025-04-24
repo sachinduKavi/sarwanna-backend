@@ -31,7 +31,6 @@ const loginAttempt = async (req: Request, res: Response) => {
 const changePassword = async (req: Request, res: Response)=>{
     let proceed = false, message = null, content = null,status = false
     try {
-        console.log("backend: " ,req.body)
         content = await AdminServices.changePassword(req.body)
         if(content) {
             message = 'password changed successfully';
@@ -54,19 +53,22 @@ const changePassword = async (req: Request, res: Response)=>{
 }
 
 const updateProfileInfo = async (req: Request , res: Response )=>{
-    let proceed = true, message = null, content = null
+    let proceed = false, message = null, content = null,status = false
     try {
         content = await AdminServices.updateProfileInfo(req.body)
         if(content) {
+            status = true
+            proceed = true
             message = 'Profile updated successfully';
         }
         else message = 'profile update failed';
     } catch(e) {
         proceed = false
+        status = false
         message = 'server error'
     }
 
-
+    console.log("response:",status,proceed,message,content)
     res.status(200).json({
         proceed: proceed,
         message: message,
