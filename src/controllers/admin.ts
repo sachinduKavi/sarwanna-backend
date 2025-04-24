@@ -5,11 +5,12 @@ import AdminServices from "../db/services/Admin";
 
 
 const loginAttempt = async (req: Request, res: Response) => {
-    let proceed = true, message = null, content = null
+    let proceed = false, message = null, content = null
 
     try {
         content = await AdminServices.loginAttempt(req.body)
         if(content) {
+            proceed=true
             message = 'login success';
         }
         else message = 'invalid username or password';
@@ -28,20 +29,24 @@ const loginAttempt = async (req: Request, res: Response) => {
 
 
 const changePassword = async (req: Request, res: Response)=>{
-    let proceed = true, message = null, content = null
+    let proceed = false, message = null, content = null,status = false
     try {
+        console.log("backend: " ,req.body)
         content = await AdminServices.changePassword(req.body)
         if(content) {
             message = 'password changed successfully';
+            status = true
         }
-        else message = 'error occured';
+        else message = 'password change failed';
     } catch(e) {
         proceed = false
         message = 'server error'
     }
 
+    console.log(status,proceed,message,content)
 
     res.status(200).json({
+        status: status,
         proceed: proceed,
         message: message,
         content: content
@@ -55,7 +60,7 @@ const updateProfileInfo = async (req: Request , res: Response )=>{
         if(content) {
             message = 'Profile updated successfully';
         }
-        else message = 'error occurred';
+        else message = 'profile update failed';
     } catch(e) {
         proceed = false
         message = 'server error'
