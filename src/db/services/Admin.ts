@@ -13,7 +13,7 @@ export default class AdminServices {
         })
         
         if(result && await checkPassword(userCredentials.password ?? '', result.password)) {
-            const {password, ...rest} = result
+            const {password,adminId, ...rest} = result
             return rest;
         }
 
