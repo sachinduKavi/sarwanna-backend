@@ -1,9 +1,13 @@
 import express from "express";
 import {authorization} from "../middleware/authorization";
-import {placeOrder} from "../controllers/order";
+import {fetchOrders, placeOrder, testing} from "../controllers/order";
 
 const router = express.Router()
 
 router.post('/placeOrder', authorization, placeOrder)
+
+router.get('/testing', testing)
+
+router.put('/getOrders', authorization, fetchOrders)
 
 export default router;
