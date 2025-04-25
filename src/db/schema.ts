@@ -27,7 +27,7 @@ export const product = mysqlTable("product", {
     stock: boolean("stock").default(true).notNull(),
     catId: varchar("cat_id", {length: 36}).notNull().references(() => category.catId),
     topItem: boolean("top_item").default(false).notNull(),
-    description: varchar("description", {length: 1024}),
+    description: varchar("description", {length: 10000}),
     unitPrice: decimal("unit_price", { precision: 10, scale: 2 }).notNull(),
     unitMeasure: varchar("unit_measure", { length: 16 }).notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
