@@ -135,6 +135,11 @@ class OrderService {
         return finalList;
     }
 
+    // Trigger order state
+    static async triggerOrderState(state: boolean, orderId: string) {
+        await db.update(order).set({status: state}).where(eq(order.orderId, orderId))
+    }
+
 }
 
 export {

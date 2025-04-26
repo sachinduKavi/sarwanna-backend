@@ -51,8 +51,30 @@ const testing = async (req: Request, res: Response) => {
     })
 }
 
+
+const triggerOrderState = async (req: Request, res: Response) => {
+    let proceed = true, message = null, content = null
+
+    try {
+        await OrderService.triggerOrderState(req.body.state, req.body.orderId)
+    } catch(e) {
+        console.error(e)
+        proceed = false
+        message = 'server error'
+    }
+
+    res.status(proceed ? 201 : 500).json({
+        proceed: proceed,
+        message: message,
+        content: content
+    })
+}
+
+
+
 export {
     placeOrder,
     testing,
-    fetchOrders
+    fetchOrders,
+    triggerOrderState
 }

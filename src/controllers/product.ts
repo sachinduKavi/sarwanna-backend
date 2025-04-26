@@ -10,7 +10,7 @@ dotenv.config();
 const uploadProductImage = async (req: Request, res: Response) => {
     let proceed = false, content = null, message = null
 
-    console.log(req.files)
+    // console.log(req.files)
 
     if (Array.isArray(req.files)) {
         content = req.files.map((element) => {
