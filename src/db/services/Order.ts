@@ -140,6 +140,14 @@ class OrderService {
         await db.update(order).set({status: state}).where(eq(order.orderId, orderId))
     }
 
+
+    // Delete order 
+    static async deleteOrder(orderId: string) {
+        // Deleting items from the product list
+        await db.delete(productList).where(eq(productList.orderId, orderId))
+        await db.delete(order).where(eq(order.orderId, orderId))
+    }
+
 }
 
 export {
