@@ -1,9 +1,9 @@
 
 import db from "../database";
 import Product from "../../models/Product";
-import { category, product, productImages, productList } from "../schema";
+import { category, product, productImages, productList, order } from "../schema";
 import { randomUUID } from "crypto";
-import {eq, and, not} from 'drizzle-orm'
+import {eq, and, not, inArray} from 'drizzle-orm'
 import { deleteImage } from "../../middleware/fileHandling";
 import e from "express";
 
@@ -150,6 +150,9 @@ class ProductServices {
         await db.transaction(async (tx) => {
             const orderResult = await tx.select().from(productList).where(eq(productList.productId, productId))
             if(orderResult.length > 0) {
+                // Check for active products
+                const activeProducts = await tx.select().from(order).where(and(inArray(order.orderId, orderResult.map(element => element.orderId)), eq(order.status, true)))
+                if(activeProducts.length > 0) throw new Error('active products exists'); // Terminate the deletion
                 if(confirm) {
                     // Update the list 
                     await tx.update(productList).set({productId: '53330c45-7bfb-4f76-8c4b-ef2843012860'}).where(eq(productList.productId, productId))

@@ -153,7 +153,7 @@ const deleteProduct = async (req: Request, res: Response) => {
         message = 'product delete success'
     } catch(e: any) {
         message = 'server error'
-        if(e.message === 'delete confirmation') message = 'delete confirmation';
+        if(typeof e.message === 'string') message = e.message;
         proceed = false
     }
     
