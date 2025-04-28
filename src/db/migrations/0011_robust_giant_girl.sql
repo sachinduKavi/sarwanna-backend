@@ -1,0 +1,1 @@
+ALTER TABLE `product_list` ADD `unit_price` decimal(10,2) NOT NULL;

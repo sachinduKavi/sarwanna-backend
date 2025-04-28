@@ -57,6 +57,7 @@ export const productList = mysqlTable("product_list", {
     orderId: varchar("order_id", {length: 36}).notNull().references(() => order.orderId),
     productId: varchar("product_id", {length: 36}).notNull().references(() => product.productId),
     qty:int("qty").notNull().default(0),
+    currentPrice:decimal("unit_price", { precision: 10, scale: 2 }).notNull()
 })
 
 

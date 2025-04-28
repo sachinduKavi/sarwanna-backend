@@ -28,6 +28,7 @@ class OrderService {
                         orderId: orderId,
                         productId: product.productId,
                         qty: product.qty,
+                        currentPrice:product.unitPrice
                     });
                 }
 
@@ -103,7 +104,7 @@ class OrderService {
             productList: {
                 productId: product.productId,
                 productName: product.name,
-                unitPrice: product.unitPrice,
+                unitPrice: productList.currentPrice,
                 unitMeasure: product.unitMeasure,
                 qty: productList.qty
             }
