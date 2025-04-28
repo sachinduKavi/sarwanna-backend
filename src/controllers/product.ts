@@ -10,7 +10,7 @@ dotenv.config();
 const uploadProductImage = async (req: Request, res: Response) => {
     let proceed = false, content = null, message = null
 
-    console.log(req.files)
+    // console.log(req.files)
 
     if (Array.isArray(req.files)) {
         content = req.files.map((element) => {
@@ -149,12 +149,12 @@ const deleteProduct = async (req: Request, res: Response) => {
     let proceed = true, message = null, content = null
 
     try {
-        await ProductServices.deleteProduct(req.params.productId)
+        await ProductServices.deleteProduct(req.params.productId, Boolean(req.params.confirm ?? false))
         message = 'product delete success'
-    } catch(e) {
-        console.log(e)
-        proceed = false
+    } catch(e: any) {
         message = 'server error'
+        if(typeof e.message === 'string') message = e.message;
+        proceed = false
     }
     
 
