@@ -48,7 +48,7 @@ router.get('/loadProducts', authorization, loadProducts)
 
 router.delete('/deleteCategory/:catId',authorization, deleteCategory)
 
-router.delete('/deleteProduct/:productId', authorization, deleteProduct)
+router.delete('/deleteProduct/:productId/:confirm', authorization, deleteProduct)
 
 router.delete('/deleteSingleImage/:imageId', authorization, deleteSingleImage)
 

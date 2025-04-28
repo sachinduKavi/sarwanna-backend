@@ -149,12 +149,12 @@ const deleteProduct = async (req: Request, res: Response) => {
     let proceed = true, message = null, content = null
 
     try {
-        await ProductServices.deleteProduct(req.params.productId)
+        await ProductServices.deleteProduct(req.params.productId, Boolean(req.params.confirm ?? false))
         message = 'product delete success'
-    } catch(e) {
-        console.log(e)
-        proceed = false
+    } catch(e: any) {
         message = 'server error'
+        if(e.message === 'delete confirmation') message = 'delete confirmation';
+        proceed = false
     }
     
 
