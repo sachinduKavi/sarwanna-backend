@@ -1,10 +1,11 @@
 
 import db from "../database";
 import Product from "../../models/Product";
-import { category, product, productImages } from "../schema";
+import { category, product, productImages, productList, order } from "../schema";
 import { randomUUID } from "crypto";
-import {eq} from 'drizzle-orm'
+import {eq, and, not, inArray} from 'drizzle-orm'
 import { deleteImage } from "../../middleware/fileHandling";
+import e from "express";
 
 class ProductServices {
     static async createProduct(values: any) {
@@ -63,6 +64,7 @@ class ProductServices {
             }
         }).from(product).leftJoin(productImages, eq(productImages.productId, product.productId))
                                         .leftJoin(category, eq(category.catId, product.catId)).orderBy(product.createdAt)
+                                        .where(not(eq(product.productId, '53330c45-7bfb-4f76-8c4b-ef2843012860')))
 
 
         // console.log(result)
@@ -143,20 +145,34 @@ class ProductServices {
         
     }
 
-    static async deleteProduct(productId: string) {
-        // Get all the image name relating to product
-        const result = await db.select().from(productImages).where(eq(productImages.productId, productId))
-        console.log(result)
+    static async deleteProduct(productId: string, confirm: boolean = false) {
+        // Check whether orders exists  ID: 53330c45-7bfb-4f76-8c4b-ef2843012860 - deleted product placeholder
+        await db.transaction(async (tx) => {
+            const orderResult = await tx.select().from(productList).where(eq(productList.productId, productId))
+            if(orderResult.length > 0) {
+                // Check for active products
+                const activeProducts = await tx.select().from(order).where(and(inArray(order.orderId, orderResult.map(element => element.orderId)), eq(order.status, true)))
+                if(activeProducts.length > 0) throw new Error('active products exists'); // Terminate the deletion
+                if(confirm) {
+                    // Update the list 
+                    await tx.update(productList).set({productId: '53330c45-7bfb-4f76-8c4b-ef2843012860'}).where(eq(productList.productId, productId))
+                } else {
+                    throw new Error("delete confirmation")
+                }
+            }
+            
+            // Get all the image name relating to product
+            const result = await tx.select().from(productImages).where(eq(productImages.productId, productId))
+            // Delete all the images related
+            await tx.delete(productImages).where(eq(productImages.productId, productId))
 
-        for(const image of result) {
-            deleteImage(image.url) // Deleting images from the file location
-        }
+            // Final step delete the product
+            await tx.delete(product).where(eq(product.productId, productId))
 
-        // Delete all the images related
-        await db.delete(productImages).where(eq(productImages.productId, productId))
-
-        // Final step delete the product
-        await db.delete(product).where(eq(product.productId, productId))
+            for(const image of result) {
+                deleteImage(image.url) // Deleting images from the file location
+            }
+        })
     }
 
 
@@ -195,7 +211,7 @@ class ProductServices {
         }).from(product)
             .leftJoin(productImages, eq(productImages.productId, product.productId))
             .leftJoin(category, eq(category.catId, product.catId))
-            .where(eq(product.catId, catId))
+            .where(and(eq(product.catId, catId), not(eq(product.productId, '53330c45-7bfb-4f76-8c4b-ef2843012860'))))
             .orderBy(product.createdAt);
 
         const productMap: Record<string, any> = {};

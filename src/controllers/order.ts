@@ -51,8 +51,50 @@ const testing = async (req: Request, res: Response) => {
     })
 }
 
+
+const triggerOrderState = async (req: Request, res: Response) => {
+    let proceed = true, message = null, content = null
+
+    try {
+        await OrderService.triggerOrderState(req.body.state, req.body.orderId)
+    } catch(e) {
+        console.error(e)
+        proceed = false
+        message = 'server error'
+    }
+
+    res.status(proceed ? 201 : 500).json({
+        proceed: proceed,
+        message: message,
+        content: content
+    })
+}
+
+
+const deleteOrder = async(req: Request, res: Response) => {
+    let proceed = true, message = null, content = null
+
+    try {
+        await OrderService.deleteOrder(req.params.orderId)
+    } catch(e) {
+        console.error(e)
+        proceed = false
+        message = 'deletion fail'
+    }
+
+    res.status(proceed ? 200 : 500).json({
+        proceed: proceed,
+        message: message,
+        content: content
+    })
+}
+
+
+
 export {
     placeOrder,
     testing,
-    fetchOrders
+    fetchOrders,
+    triggerOrderState,
+    deleteOrder
 }
