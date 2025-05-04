@@ -11,7 +11,7 @@ export default class AdminServices {
         const result = await db.query.admin.findFirst({
             where: eq(admin.email, userCredentials.email?? '')
         })
-        
+        console.log(result)
         if(result && await checkPassword(userCredentials.password ?? '', result.password)) {
             const {password,adminId, ...rest} = result
             return rest;

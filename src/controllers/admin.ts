@@ -8,6 +8,7 @@ const loginAttempt = async (req: Request, res: Response) => {
     let proceed = false, message = null, content = null
 
     try {
+        console.log("login request",req.body)
         content = await AdminServices.loginAttempt(req.body)
         if(content) {
             proceed=true
