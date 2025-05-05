@@ -8,10 +8,11 @@ import bcrypt from "bcrypt";
 export default class AdminServices {
     // check admin password
     static async loginAttempt(userCredentials: Admin): Promise<boolean | Admin> {
+
         const result = await db.query.admin.findFirst({
             where: eq(admin.email, userCredentials.email?? '')
         })
-        
+
         if(result && await checkPassword(userCredentials.password ?? '', result.password)) {
             const {password,adminId, ...rest} = result
             return rest;
