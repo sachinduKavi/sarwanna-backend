@@ -188,6 +188,54 @@ class ProductServices {
         })
     }
 
+    static async getProductFromId(productId: string) {
+        const result = await db.select({
+            productId: product.productId,
+            name: product.name,
+            stock: product.stock,
+            unitPrice: product.unitPrice,
+            unitMeasure: product.unitMeasure,
+            topItem: product.topItem,
+            description: product.description,
+            createdAt: product.createdAt,
+            category: {
+                catId: category.catId,
+                name: category.name
+            },
+            productImages: {
+                imageId: productImages.imageId,
+                url: productImages.url,
+                sortNo: productImages.sortNo
+            }
+        })
+            .from(product)
+            .leftJoin(productImages, eq(productImages.productId, product.productId))
+            .leftJoin(category, eq(category.catId, product.catId))
+            .where(eq(product.productId, productId))
+            .orderBy(productImages.sortNo);
+
+        if (result.length === 0) {
+            return null;
+        }
+
+        const productData = {
+            ...result[0],
+            productImages: [] as Array<{
+                imageId: string;
+                url: string;
+                sortNo: number;
+            }>
+        };
+
+        for (const row of result) {
+            if (row.productImages) {
+                productData.productImages.push(row.productImages);
+            }
+        }
+
+        return productData;
+    }
+
     static async fetchProductsRelevantToCategoryRequest(catId: string) {
 
         const result = await db.select({
