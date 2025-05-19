@@ -5,6 +5,7 @@ import {customer, order, product, productImages, productList} from "../schema";
 import {sendCustomerOrderConfirmation} from "../../middleware/sendMessage";
 import twilio from "twilio/lib/rest/Twilio";
 import { BinaryOperator, desc, eq, or, like } from "drizzle-orm";
+import { currencyFormat } from "../../middleware/formats";
 
 
 dotenv.config()
@@ -16,7 +17,6 @@ const client = new twilio(accountSid, authToken);
 
 class OrderService {
     static async placeOrder(customerData: any, orderData: any, productListData: any) {
-        try {
             const result = await db.transaction(async (trx) => {
                 const orderId = randomUUID();
                 const customerId = randomUUID();
@@ -32,60 +32,81 @@ class OrderService {
                     });
                 }
 
-                console.log(accountSid, authToken);
-
                 // await sendCustomerOrderConfirmation(customerData, productListData);
-                let productListString: string = '';
-                let total = 0;
-                productListString += 'New Order Received (saravanaflora.lk)\n';
-                // Header row
-                productListString += `Item Name | Price | Qty\n`;
-                productListString += '-'.repeat(50) + '\n';
+                let total: number = 0;
+                let count: number = 0;
+                const productArray: Array<string> = []
 
                 productListData.forEach((element: any) => {
                     const name = element.name.toString().slice(0, 35); // Prevent overflow
                     const price = Number(element.unitPrice);
                     const qty = Number(element.qty);
 
-                    productListString += `${name} | LKR ${price.toFixed(2)} | ${qty}\n`;
+                    if(count < 10) {
+                        productArray.push(`${name} | LKR ${price.toFixed(2)} | ${qty}`)
+                    }
+                    count++;
                     total += qty * price;
                 });
 
-                
-                productListString += '-'.repeat(50) + '\n';
-                productListString += `${'Total:'.padEnd(20)} LKR${total.toFixed(2)}\n\n`;
+                while(count < 10) {
+                    productArray.push("--")
+                    count++;
+                }
 
-                productListString += "*Customer Details..*\n";
-                productListString += `Customer Name : ${customerData.name}\n`;
-                productListString += `Contact Number: ${customerData.mobileNumber}\n`;
-                productListString += `Email: ${customerData.email}\n`;
-                productListString += `Address: ${customerData.address}\n`;
-                productListString += `Message:-\n${orderData.note}`;
-
-
-                await OrderService.whatsAppMessage(productListString)
+                await this.whatsAppMessageOrder(productArray, customerData, total, '764314505')
+                // await OrderService.whatsAppMessage(productListString)
             });
 
 
             return result;
-        } catch (error) {
-            console.error('Error placing order:', error);
-            throw error;
+    }
+
+
+    static async whatsAppMessageOrder(productArray: Array<string>, customerData: any, total: number, receiver: string) {
+        const contentVariable = JSON.stringify({
+                    1: productArray[0],
+                    2: productArray[1],
+                    3: productArray[2],
+                    4: productArray[3],
+                    5: productArray[4],
+                    6: productArray[5],
+                    7: productArray[6],
+                    8: productArray[7],
+                    9: productArray[8],
+                    10: productArray[9],
+                    11: customerData.name,
+                    12: customerData.mobileNumber,
+                    13: customerData.email,
+                    14: customerData.address,
+                    15: customerData.note,
+                    16: currencyFormat(total)
+                })
+
+        console.log(contentVariable)
+        try {
+            const message = await client.messages.create({
+                contentSid: 'HX7067ffcf558f3754597ed8de2d66463e',
+                contentVariables: contentVariable,
+                from: 'whatsapp:+19786256028',
+                to: `whatsapp:+94${receiver}`,
+            });
+            // console.log('WhatsApp message sent:', message);
+        } catch (err) {
+            console.error('Failed to send WhatsApp message:', err);
         }
     }
 
 
     static async whatsAppMessage(messageString: string) {
         try {
-            console.log('Sending WhatsApp message:', messageString);
+
+
             const message = await client.messages.create({
-                // contentSid: 'HX673b8b5f098f715b921a588038e133e5',
-                // contentVariables: JSON.stringify({
-                //     "1": "Hello World"
-                // }),
-                body: messageString,
-                forceDelivery: true,
-                messagingServiceSid: 'MG4e29d6f8c7d7b7997156a09365db20f0',
+                contentSid: 'HX673b8b5f098f715b921a588038e133e5',
+                body: 'hello Sri lanaka',
+                contentVariables: `{"1": "Hello India"}`,
+                // messagingServiceSid: 'MG4e29d6f8c7d7b7997156a09365db20f0',
                 from: 'whatsapp:+19786256028',
                 to: 'whatsapp:+94764314505',
             });

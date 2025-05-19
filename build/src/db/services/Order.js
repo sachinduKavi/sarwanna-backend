@@ -45,7 +45,7 @@ class OrderService {
                     // await sendCustomerOrderConfirmation(customerData, productListData);
                     let productListString = '';
                     let total = 0;
-                    productListString += "*New Order Received (Sarvanna Floral).*\n";
+                    productListString += 'New Order Received (saravanaflora.lk)\n';
                     // Header row
                     productListString += `Item Name | Price | Qty\n`;
                     productListString += '-'.repeat(50) + '\n';
@@ -62,8 +62,8 @@ class OrderService {
                     productListString += `Customer Name : ${customerData.name}\n`;
                     productListString += `Contact Number: ${customerData.mobileNumber}\n`;
                     productListString += `Email: ${customerData.email}\n`;
-                    productListString += `Address: ${customerData.address}`;
-                    productListString += `Message:\n ${orderData.message}`;
+                    productListString += `Address: ${customerData.address}\n`;
+                    productListString += `Message:-\n${orderData.note}`;
                     yield OrderService.whatsAppMessage(productListString);
                 }));
                 return result;
@@ -77,10 +77,28 @@ class OrderService {
     static whatsAppMessage(messageString) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
+                console.log('Sending WhatsApp message:', messageString);
                 const message = yield client.messages.create({
+                    // contentSid: 'HX673b8b5f098f715b921a588038e133e5',
+                    // contentVariables: JSON.stringify({
+                    //     "1": "Hello World"
+                    // }),
+                    body: messageString,
+                    forceDelivery: true,
+                    messagingServiceSid: 'MG4e29d6f8c7d7b7997156a09365db20f0',
                     from: 'whatsapp:+19786256028',
-                    to: 'whatsapp:+94763685923',
-                    body: messageString
+                    to: 'whatsapp:+94759754189',
+                });
+                yield client.messages.create({
+                    // contentSid: 'HX673b8b5f098f715b921a588038e133e5',
+                    // contentVariables: JSON.stringify({
+                    //     "1": "Hello World"
+                    // }),
+                    body: messageString,
+                    forceDelivery: true,
+                    messagingServiceSid: 'MG4e29d6f8c7d7b7997156a09365db20f0',
+                    from: 'whatsapp:+19786256028',
+                    to: 'whatsapp:+94764314505',
                 });
                 console.log('WhatsApp message sent:', message);
             }

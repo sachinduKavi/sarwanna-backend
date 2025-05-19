@@ -16,7 +16,7 @@ const PORT = process.env.PORT || 3500;
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
 app.use((0, cors_1.default)({
-    origin: ['http://localhost:5173', 'http://saravanaflora.lk', 'https://saravanaflora.lk'],
+    origin: ['http://localhost:5173', 'http://saravanaflora.lk', 'https://saravanaflora.lk', 'www.saravanaflora.lk', 'https://www.saravanaflora.lk', 'http://www.saravanaflora.lk'],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
