@@ -205,6 +205,25 @@ const fetchProductsRelevantToCategoryRequest = async (req: Request, res: Respons
     })
 }
 
+const getProductFromId = async(req: Request, res: Response) => {
+    let proceed = true, message = null, content = null
+
+    try {
+        content = await ProductServices.getProductFromId(req.params.productId)
+        message = 'product load successfully'
+    } catch(e) {
+        console.log(e)
+        proceed = false
+        message = 'server error'
+    }
+
+
+    res.status(proceed?200:500).json({
+        proceed: proceed,
+        message: message,
+        content: content
+    })
+}
 
 const updateProductValues = async(req: Request, res: Response) => {
     let proceed = true, message = null, content = null
@@ -235,5 +254,6 @@ export {
     deleteSingleImage,
     fetchProductsRelevantToCategoryRequest,
     updateProductValues,
-    loadBestProducts
+    loadBestProducts,
+    getProductFromId
  };

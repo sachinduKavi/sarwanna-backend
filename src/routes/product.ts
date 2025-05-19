@@ -12,7 +12,7 @@ import {
     deleteProduct,
     deleteSingleImage,
     fetchProductsRelevantToCategoryRequest,
-    updateProductValues, loadBestProducts
+    updateProductValues, loadBestProducts, getProductFromId
 } from '../controllers/product';
 import { imageFileType } from '../middleware/types';
 import { v4 } from 'uuid';
@@ -57,6 +57,8 @@ router.get('/fetchProductsOfCategory/:catId',authorization,fetchProductsRelevant
 router.get('/getBestProducts/',authorization,loadBestProducts)
 
 router.put('/updateProduct', authorization, updateProductValues)
+
+router.get('/getProductFromId/:productId', authorization, getProductFromId)
 
 
 export default router;
