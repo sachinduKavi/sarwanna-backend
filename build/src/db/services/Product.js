@@ -182,6 +182,44 @@ class ProductServices {
             }));
         });
     }
+    static getProductFromId(productId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield database_1.default.select({
+                productId: schema_1.product.productId,
+                name: schema_1.product.name,
+                stock: schema_1.product.stock,
+                unitPrice: schema_1.product.unitPrice,
+                unitMeasure: schema_1.product.unitMeasure,
+                topItem: schema_1.product.topItem,
+                description: schema_1.product.description,
+                createdAt: schema_1.product.createdAt,
+                category: {
+                    catId: schema_1.category.catId,
+                    name: schema_1.category.name
+                },
+                productImages: {
+                    imageId: schema_1.productImages.imageId,
+                    url: schema_1.productImages.url,
+                    sortNo: schema_1.productImages.sortNo
+                }
+            })
+                .from(schema_1.product)
+                .leftJoin(schema_1.productImages, (0, drizzle_orm_1.eq)(schema_1.productImages.productId, schema_1.product.productId))
+                .leftJoin(schema_1.category, (0, drizzle_orm_1.eq)(schema_1.category.catId, schema_1.product.catId))
+                .where((0, drizzle_orm_1.eq)(schema_1.product.productId, productId))
+                .orderBy(schema_1.productImages.sortNo);
+            if (result.length === 0) {
+                return null;
+            }
+            const productData = Object.assign(Object.assign({}, result[0]), { productImages: [] });
+            for (const row of result) {
+                if (row.productImages) {
+                    productData.productImages.push(row.productImages);
+                }
+            }
+            return productData;
+        });
+    }
     static fetchProductsRelevantToCategoryRequest(catId) {
         return __awaiter(this, void 0, void 0, function* () {
             const result = yield database_1.default.select({

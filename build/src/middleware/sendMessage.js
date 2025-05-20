@@ -14,13 +14,20 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.sendCustomerOrderConfirmation = void 0;
 const nodemailer_1 = __importDefault(require("nodemailer"));
+// const transporter = nodemailer.createTransport({
+//     host: "mail.softdetroits.com",
+//     port: 465,
+//     auth: {
+//         user: "info@softdetroits.com",
+//         pass: "detroits123", // App password
+//     },
+// });
 const transporter = nodemailer_1.default.createTransport({
-    host: "smtp.gmail.com",
+    host: "mail.saravanaflora.lk",
     port: 465,
-    secure: true, // use SSL
     auth: {
-        user: "",
-        pass: "", // App password
+        user: "admin@saravanaflora.lk",
+        pass: "H?(rP!UFLyC%",
     },
 });
 const sendCustomerOrderConfirmation = (customerData, productListData) => __awaiter(void 0, void 0, void 0, function* () {
@@ -29,7 +36,7 @@ const sendCustomerOrderConfirmation = (customerData, productListData) => __await
     }, 0);
     try {
         const info = yield transporter.sendMail({
-            from: '',
+            from: 'admin@saravanaflora.lk',
             to: customerData.email,
             subject: 'New Inquiry Inquiry - Flower Shop',
             html: `<!DOCTYPE html>

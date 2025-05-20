@@ -34,4 +34,5 @@ router.delete('/deleteSingleImage/:imageId', authorization_1.authorization, prod
 router.get('/fetchProductsOfCategory/:catId', authorization_1.authorization, product_1.fetchProductsRelevantToCategoryRequest);
 router.get('/getBestProducts/', authorization_1.authorization, product_1.loadBestProducts);
 router.put('/updateProduct', authorization_1.authorization, product_1.updateProductValues);
+router.get('/getProductFromId/:productId', authorization_1.authorization, product_1.getProductFromId);
 exports.default = router;

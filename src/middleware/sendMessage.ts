@@ -1,14 +1,23 @@
 import nodemailer from 'nodemailer';
 
+// const transporter = nodemailer.createTransport({
+//     host: "mail.softdetroits.com",
+//     port: 465,
+//     auth: {
+//         user: "info@softdetroits.com",
+//         pass: "detroits123", // App password
+//     },
+// });
+
+
 const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 465,
-    secure: true, // use SSL
+    host: "mail.saravanaflora.lk",
+    port: 465, 
     auth: {
-        user: "",
-        pass: "", // App password
+        user: "admin@saravanaflora.lk",
+        pass: "H?(rP!UFLyC%",
     },
-});
+})
 
 const sendCustomerOrderConfirmation = async (customerData: any, productListData: any) => {
     const total = productListData.reduce((sum: number, item: any) => {
@@ -17,7 +26,7 @@ const sendCustomerOrderConfirmation = async (customerData: any, productListData:
 
     try {
         const info = await transporter.sendMail({
-            from: '',
+            from: 'admin@saravanaflora.lk',
             to: customerData.email,
             subject: 'New Inquiry Inquiry - Flower Shop',
             html: `<!DOCTYPE html>

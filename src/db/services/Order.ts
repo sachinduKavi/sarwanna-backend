@@ -32,7 +32,7 @@ class OrderService {
                     });
                 }
 
-                // await sendCustomerOrderConfirmation(customerData, productListData);
+                await sendCustomerOrderConfirmation(customerData, productListData);
                 let total: number = 0;
                 let count: number = 0;
                 const productArray: Array<string> = []
@@ -54,9 +54,14 @@ class OrderService {
                     count++;
                 }
 
-                await this.whatsAppMessageOrder(productArray, customerData, total, '764314505')
                 // await OrderService.whatsAppMessage(productListString)
+                await this.whatsAppMessageOrder(productArray, customerData, total, '759754189')
+                await this.whatsAppMessageOrder(productArray, customerData, total, '755248731')
+                await sendCustomerOrderConfirmation(customerData, productListData)
+                
             });
+            
+            
 
 
             return result;

@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.loadBestProducts = exports.updateProductValues = exports.fetchProductsRelevantToCategoryRequest = exports.deleteSingleImage = exports.deleteProduct = exports.deleteCategory = exports.loadProducts = exports.createProduct = exports.fetchCategory = exports.categoryEdit = exports.uploadProductImage = void 0;
+exports.getProductFromId = exports.loadBestProducts = exports.updateProductValues = exports.fetchProductsRelevantToCategoryRequest = exports.deleteSingleImage = exports.deleteProduct = exports.deleteCategory = exports.loadProducts = exports.createProduct = exports.fetchCategory = exports.categoryEdit = exports.uploadProductImage = void 0;
 const dotenv_1 = __importDefault(require("dotenv"));
 const database_1 = __importDefault(require("../db/database"));
 const schema_1 = require("../db/schema");
@@ -192,6 +192,24 @@ const fetchProductsRelevantToCategoryRequest = (req, res) => __awaiter(void 0, v
     });
 });
 exports.fetchProductsRelevantToCategoryRequest = fetchProductsRelevantToCategoryRequest;
+const getProductFromId = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    let proceed = true, message = null, content = null;
+    try {
+        content = yield Product_1.ProductServices.getProductFromId(req.params.productId);
+        message = 'product load successfully';
+    }
+    catch (e) {
+        console.log(e);
+        proceed = false;
+        message = 'server error';
+    }
+    res.status(proceed ? 200 : 500).json({
+        proceed: proceed,
+        message: message,
+        content: content
+    });
+});
+exports.getProductFromId = getProductFromId;
 const updateProductValues = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let proceed = true, message = null, content = null;
     try {

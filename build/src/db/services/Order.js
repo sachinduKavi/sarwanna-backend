@@ -17,8 +17,10 @@ const database_1 = __importDefault(require("../database"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const crypto_1 = require("crypto");
 const schema_1 = require("../schema");
+const sendMessage_1 = require("../../middleware/sendMessage");
 const Twilio_1 = __importDefault(require("twilio/lib/rest/Twilio"));
 const drizzle_orm_1 = require("drizzle-orm");
+const formats_1 = require("../../middleware/formats");
 dotenv_1.default.config();
 const accountSid = process.env.ACCOUNT_SSID;
 const authToken = process.env.AUTH_TOKEN;
@@ -26,77 +28,89 @@ const client = new Twilio_1.default(accountSid, authToken);
 class OrderService {
     static placeOrder(customerData, orderData, productListData) {
         return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const result = yield database_1.default.transaction((trx) => __awaiter(this, void 0, void 0, function* () {
-                    const orderId = (0, crypto_1.randomUUID)();
-                    const customerId = (0, crypto_1.randomUUID)();
-                    orderData.datetime = new Date(orderData.datetime);
-                    yield trx.insert(schema_1.customer).values(Object.assign({ customerId: customerId }, customerData));
-                    yield trx.insert(schema_1.order).values(Object.assign({ orderId: orderId, customerId: customerId }, orderData));
-                    for (const product of productListData) {
-                        yield trx.insert(schema_1.productList).values({
-                            orderId: orderId,
-                            productId: product.productId,
-                            qty: product.qty,
-                            currentPrice: product.unitPrice
-                        });
-                    }
-                    console.log(accountSid, authToken);
-                    // await sendCustomerOrderConfirmation(customerData, productListData);
-                    let productListString = '';
-                    let total = 0;
-                    productListString += 'New Order Received (saravanaflora.lk)\n';
-                    // Header row
-                    productListString += `Item Name | Price | Qty\n`;
-                    productListString += '-'.repeat(50) + '\n';
-                    productListData.forEach((element) => {
-                        const name = element.name.toString().slice(0, 35); // Prevent overflow
-                        const price = Number(element.unitPrice);
-                        const qty = Number(element.qty);
-                        productListString += `${name} | LKR ${price.toFixed(2)} | ${qty}\n`;
-                        total += qty * price;
+            const result = yield database_1.default.transaction((trx) => __awaiter(this, void 0, void 0, function* () {
+                const orderId = (0, crypto_1.randomUUID)();
+                const customerId = (0, crypto_1.randomUUID)();
+                orderData.datetime = new Date(orderData.datetime);
+                yield trx.insert(schema_1.customer).values(Object.assign({ customerId: customerId }, customerData));
+                yield trx.insert(schema_1.order).values(Object.assign({ orderId: orderId, customerId: customerId }, orderData));
+                for (const product of productListData) {
+                    yield trx.insert(schema_1.productList).values({
+                        orderId: orderId,
+                        productId: product.productId,
+                        qty: product.qty,
+                        currentPrice: product.unitPrice
                     });
-                    productListString += '-'.repeat(50) + '\n';
-                    productListString += `${'Total:'.padEnd(20)} LKR${total.toFixed(2)}\n\n`;
-                    productListString += "*Customer Details..*\n";
-                    productListString += `Customer Name : ${customerData.name}\n`;
-                    productListString += `Contact Number: ${customerData.mobileNumber}\n`;
-                    productListString += `Email: ${customerData.email}\n`;
-                    productListString += `Address: ${customerData.address}\n`;
-                    productListString += `Message:-\n${orderData.note}`;
-                    yield OrderService.whatsAppMessage(productListString);
-                }));
-                return result;
+                }
+                yield (0, sendMessage_1.sendCustomerOrderConfirmation)(customerData, productListData);
+                let total = 0;
+                let count = 0;
+                const productArray = [];
+                productListData.forEach((element) => {
+                    const name = element.name.toString().slice(0, 35); // Prevent overflow
+                    const price = Number(element.unitPrice);
+                    const qty = Number(element.qty);
+                    if (count < 10) {
+                        productArray.push(`${name} | LKR ${price.toFixed(2)} | ${qty}`);
+                    }
+                    count++;
+                    total += qty * price;
+                });
+                while (count < 10) {
+                    productArray.push("--");
+                    count++;
+                }
+                // await OrderService.whatsAppMessage(productListString)
+                yield this.whatsAppMessageOrder(productArray, customerData, total, '759754189');
+                yield this.whatsAppMessageOrder(productArray, customerData, total, '755248731');
+                yield (0, sendMessage_1.sendCustomerOrderConfirmation)(customerData, productListData);
+            }));
+            return result;
+        });
+    }
+    static whatsAppMessageOrder(productArray, customerData, total, receiver) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const contentVariable = JSON.stringify({
+                1: productArray[0],
+                2: productArray[1],
+                3: productArray[2],
+                4: productArray[3],
+                5: productArray[4],
+                6: productArray[5],
+                7: productArray[6],
+                8: productArray[7],
+                9: productArray[8],
+                10: productArray[9],
+                11: customerData.name,
+                12: customerData.mobileNumber,
+                13: customerData.email,
+                14: customerData.address,
+                15: customerData.note,
+                16: (0, formats_1.currencyFormat)(total)
+            });
+            console.log(contentVariable);
+            try {
+                const message = yield client.messages.create({
+                    contentSid: 'HX7067ffcf558f3754597ed8de2d66463e',
+                    contentVariables: contentVariable,
+                    from: 'whatsapp:+19786256028',
+                    to: `whatsapp:+94${receiver}`,
+                });
+                // console.log('WhatsApp message sent:', message);
             }
-            catch (error) {
-                console.error('Error placing order:', error);
-                throw error;
+            catch (err) {
+                console.error('Failed to send WhatsApp message:', err);
             }
         });
     }
     static whatsAppMessage(messageString) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log('Sending WhatsApp message:', messageString);
                 const message = yield client.messages.create({
-                    // contentSid: 'HX673b8b5f098f715b921a588038e133e5',
-                    // contentVariables: JSON.stringify({
-                    //     "1": "Hello World"
-                    // }),
-                    body: messageString,
-                    forceDelivery: true,
-                    messagingServiceSid: 'MG4e29d6f8c7d7b7997156a09365db20f0',
-                    from: 'whatsapp:+19786256028',
-                    to: 'whatsapp:+94759754189',
-                });
-                yield client.messages.create({
-                    // contentSid: 'HX673b8b5f098f715b921a588038e133e5',
-                    // contentVariables: JSON.stringify({
-                    //     "1": "Hello World"
-                    // }),
-                    body: messageString,
-                    forceDelivery: true,
-                    messagingServiceSid: 'MG4e29d6f8c7d7b7997156a09365db20f0',
+                    contentSid: 'HX673b8b5f098f715b921a588038e133e5',
+                    body: 'hello Sri lanaka',
+                    contentVariables: `{"1": "Hello India"}`,
+                    // messagingServiceSid: 'MG4e29d6f8c7d7b7997156a09365db20f0',
                     from: 'whatsapp:+19786256028',
                     to: 'whatsapp:+94764314505',
                 });
